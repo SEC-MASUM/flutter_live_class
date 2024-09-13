@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_live_class/screens/update_product_screen.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({
@@ -24,7 +25,14 @@ class ProductItem extends StatelessWidget {
           ButtonBar(
             children: [
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return const UpdateProductScreen();
+                    }),
+                  );
+                },
                 icon: const Icon(Icons.edit),
                 label: const Text("Edit"),
               ),

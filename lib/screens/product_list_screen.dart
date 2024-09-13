@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_live_class/screens/add_new_product_screen.dart';
 import 'package:flutter_live_class/widgets/product_item.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -28,7 +29,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const AddNewProductScreen();
+          }));
+        },
         child: const Icon(Icons.add),
       ),
     );

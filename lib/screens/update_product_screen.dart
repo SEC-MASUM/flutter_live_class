@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class AddNewProductScreen extends StatefulWidget {
-  const AddNewProductScreen({super.key});
+class UpdateProductScreen extends StatefulWidget {
+  const UpdateProductScreen({super.key});
 
   @override
-  State<AddNewProductScreen> createState() => _AddNewProductScreenState();
+  State<UpdateProductScreen> createState() => _UpdateProductScreenState();
 }
 
-class _AddNewProductScreenState extends State<AddNewProductScreen> {
+class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final TextEditingController _productNameTEController =
       TextEditingController();
   final TextEditingController _unitPriceTEController = TextEditingController();
@@ -20,7 +20,7 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add New Product"),
+        title: const Text("Update Product"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,7 +82,7 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
               fixedSize: const Size.fromWidth(double.maxFinite),
             ),
             onPressed: _onTapAddProduct,
-            child: const Text("ADD PRODUCT"),
+            child: const Text("UPDATE"),
           ),
         ],
       ),

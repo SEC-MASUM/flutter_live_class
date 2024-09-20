@@ -77,14 +77,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       for (var item in jsonResponse["data"]) {
         Product product = Product(
-            id: item["_id"],
-            productName: item["ProductName"],
-            productCode: item["ProductCode"],
-            img: item["Img"],
-            unitPrice: item["UnitPrice"],
-            qty: item["Qty"],
-            totalPrice: item["TotalPrice"],
-            createdDate: item["CreatedDate"]);
+            id: item["_id"] ?? "",
+            productName: item["ProductName"] ?? "",
+            productCode: item["ProductCode"] ?? "",
+            img: item["Img"] ?? "",
+            unitPrice: item["UnitPrice"] ?? "",
+            qty: item["Qty"] ?? "",
+            totalPrice: item["TotalPrice"] ?? "",
+            createdDate: item["CreatedDate"] ?? "");
         productList.add(product);
       }
     }

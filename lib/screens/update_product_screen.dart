@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_live_class/models/product.dart';
+import 'package:flutter_live_class/screens/product_list_screen.dart';
+import 'package:http/http.dart';
 
 class UpdateProductScreen extends StatefulWidget {
-  const UpdateProductScreen({super.key});
+  const UpdateProductScreen({super.key, required this.product});
+
+  final Product product;
 
   @override
   State<UpdateProductScreen> createState() => _UpdateProductScreenState();
@@ -16,15 +23,30 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final TextEditingController _codeTEController = TextEditingController();
   final TextEditingController _quantityTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _inProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _productNameTEController.text = widget.product.productName.toString();
+    _unitPriceTEController.text = widget.product.unitPrice.toString();
+    _totalPriceTEController.text = widget.product.totalPrice.toString();
+    _imageTEController.text = widget.product.img.toString();
+    _codeTEController.text = widget.product.productCode.toString();
+    _quantityTEController.text = widget.product.qty.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Update Product"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _buildNewProductForm(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _buildNewProductForm(),
+        ),
       ),
     );
   }
@@ -40,6 +62,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Name",
               labelText: "Product Name",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _unitPriceTEController,
@@ -47,6 +75,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Unit Price",
               labelText: "Unit Price",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _totalPriceTEController,
@@ -54,6 +88,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Total Price",
               labelText: "Total Price",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _imageTEController,
@@ -61,6 +101,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Image",
               labelText: "Product Image",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _codeTEController,
@@ -68,6 +114,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Product Code",
               labelText: "Product Code",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _quantityTEController,
@@ -75,13 +127,21 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               hintText: "Quantity",
               labelText: "Quantity",
             ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Enter a valid value";
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               fixedSize: const Size.fromWidth(double.maxFinite),
             ),
-            onPressed: _onTapAddProduct,
+            onPressed: () {
+              _onTapUpdateProduct(widget.product.id);
+            },
             child: const Text("UPDATE"),
           ),
         ],
@@ -89,7 +149,43 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     );
   }
 
-  void _onTapAddProduct() {}
+  void _onTapUpdateProduct(String id) {
+    if (_formKey.currentState!.validate()) {
+      updateProduct(id);
+    }
+  }
+
+  Future<void> updateProduct(String id) async {
+    setState(() {
+      _inProgress = true;
+    });
+    Uri uri = Uri.parse("http://164.68.107.70:6060/api/v1/UpdateProduct/$id");
+    Map<String, dynamic> requestBody = {
+      "Img": _imageTEController.text,
+      "ProductCode": _codeTEController.text,
+      "ProductName": _productNameTEController.text,
+      "Qty": _quantityTEController.text,
+      "TotalPrice": _totalPriceTEController.text,
+      "UnitPrice": _unitPriceTEController.text
+    };
+    Response response = await post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(requestBody),
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const ProductListScreen();
+      }));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Product updated")));
+    }
+    setState(() {
+      _inProgress = false;
+    });
+  }
 
   @override
   void dispose() {

@@ -46,6 +46,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 itemBuilder: (context, index) {
                   return ProductItem(
                     product: productList[index],
+                    onDelete: deleteProduct,
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -90,5 +91,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
     }
     _inProgress = false;
     setState(() {});
+  }
+
+  Future<void> deleteProduct(String id) async {
+    setState(() {
+      _inProgress = true;
+    });
+
+    Uri uri = Uri.parse("http://164.68.107.70:6060/api/v1/DeleteProduct/$id");
+    Response response = await get(uri);
+    if (response.statusCode == 200) {
+      getProductList();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Product Deleted")));
+    }
+    setState(() {
+      _inProgress = false;
+    });
   }
 }
